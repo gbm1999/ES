@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title> Estrategias de Seguridad</title>
+    <meta charset="utf-8">
+    
+    <script type="text/javascript">
+    function changeCSS(cssFile) {
+      var oldlink = document.getElementById("estilo");
+      var newlink = document.createElement("link")
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("type", "text/css");
+      newlink.setAttribute("id", "estilo");
+      newlink.setAttribute("href", cssFile);
+      document.getElementsByTagName("head")[0].replaceChild(newlink, oldlink);
+    }
+    </script>
+  </head>
+  
+  <body>
+    <link href='https://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+    <header>
+      <h1> CIFRADO DE ARCHIVOS </h1>
+      <nav>
+          <ul> 
+          </ul> 
+      </nav>
+    </header>
+  
+    <main>
+      <div class="datos" id="nuevozip">
+        <ul>
+          <li class="campos">
+            <label>Nombre:</label>
+            <input type="text" id="inputName" name="name" autofocus>
+          </li>
+          <li class="campos">
+            <label>Descripción:</label>
+            <input type="text" id="inputDesc" name="description" autofocus>
+          </li>
+          <li class="campos">
+              <label>Fecha:</label>
+              <input type="date" id="inputDate" name="fecha" autofocus>
+          </li>
+          <li class="campos">
+            <input type="file" id="fileInput" name = 'fileEnc' multiple="multiple" size="60" onchange="GetFileInfo ()" accept="application/pdf,image/jpeg,image/gif,image/png">
+            <div id="info"></div>
+          </li>
+          <li>
+            <input type="button" id="btnSubmit" name="crea" value="Cifrar">
+          </li>
+		      <li>
+            <input type="button" id="nuevoCampo" name="añadir" value="Añadir nuevo campo"> <br>
+            <label>Introduce el primer campo:</label>
+            <input type="text" id="inputcampo1" name="campo1" autofocus>  <br>
+            <label>Introduce el segundo campo:</label>
+            <input type="text" id="inputcampo2" name="campo2" autofocus>
+          </li>
+        </ul>
+      </div>
+      <div id="compartidos">
+        <h3>
+          Proyectos y archivos asociados
+          <div id="lista-archivos">
+            
+          </div>
+        </h3>
+      </div>
+    </main>
+    <script src="scripts/codigo.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  </body>
+
+  <style>
+    li{
+  list-style: none;
+}
+
+#btnSubmit {
+  margin-left: 50%;
+}
+
+a:link, a:visited, a:active {
+  text-decoration:none;
+  color: cornflowerblue;
+}
+
+section{
+  margin-top: 80px; 
+  counter-reset: section;
+  background-color: rgb(19, 228, 230);
+}
+ 
+.datos ul{
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  list-style: none;
+  padding: 0px;
+}
+
+.datos ul li{
+  border-bottom: #eee 1px solid;
+  padding: 12px;
+}
+
+/*
+.borrar {
+  margin-left: 30%;
+  position: absolute;
+}
+
+
+.mostrar {
+  margin-left: 50%;
+  position: relative;
+}
+*/
+
+.datos ul li:first-child{
+  border-top: #777 1px solid;
+}
+
+.datos ul li:last-child{
+  border-bottom: #777 1px solid;
+}
+
+.datos label{
+  display: inline-block;
+  width: 15em;
+}
+
+img {
+  border: lightgray 1px solid;
+  max-width: 512px;
+  max-height: 512px;
+  width: 50px;
+  height: 50px;
+  vertical-align: text-top;
+  margin-right: 10px;
+}
+
+.datos input{
+  border: #aaa 1px solid;
+  box-shadow: 0px 0px 3px #ccc, 0 5px 8px #eee inset;
+  border-radius:2px;    
+}
+
+.informacion input{
+  position: relative;
+  text-align: center;
+  margin-left: 20px;
+}
+    
+h1{
+  font-size: 36px;
+  font-weight: bold;
+}
+
+h2{
+  font-size: 25px;
+  font-weight: bold;
+}
+
+header{
+  max-width: 1080px;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+nav ul 
+{
+  color: cornflowerblue;
+  margin: 0;
+}
+
+main {
+  max-width: 1080px;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+body {
+  background-color: white;
+  color: #333333;
+  margin: 0;
+  font-family: 'Droid Serif', serif;
+}
+
+section {
+  background-color: rgb(174, 214, 241);
+  border: lightgray 1px solid;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  box-shadow: 6px 6px 3px slategray;
+  padding: 10px;
+  position: relative;
+}
+
+
+#inputcampo1 {
+  margin-top: 10px
+}
+
+#inputcampo2 {
+  margin-top: 10px
+}
+
+#compartidos{
+  text-align: center;
+}
+
+
+
+  </style>
+</html>

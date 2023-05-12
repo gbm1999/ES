@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script data-main="scripts/bcrypt.js" src="scripts/require.js"></script>
+  <title>Registro/Inicio de sesión</title>
+</head>
+
+<body>
+   <div class="pagina">
+     <div class="login-container">
+       <div class="register">
+         <h2>Registrarse</h2>
+           <input type="text" placeholder="Nombre" id="nombre" class="nombre" required>
+           <input type="text" placeholder="Correo" id="correo" class="correo" required>
+           <i class="fa-solid fa-key"></i>
+         
+            <input type="password" placeholder="Contraseña" id="contra" class="contra" required>
+   
+           <input type="password" placeholder="Confirmar contraseña" id="confcontra" class="confcontra" required>
+           <input type="button" id="registro" class="regis" name="reg" value="Registrarse">
+       </div>
+       <div class="login">
+         <h2>Iniciar Sesión</h2>
+            <input type="text" placeholder="Correo" id="email" class="email" required>
+            <input type="password" placeholder="Contraseña" id= "contraini" class="contraini" required>
+            <input type="button" id="sesion" class="inicioses" value="Iniciar Sesión">
+       </div>
+     </div>
+   </div>
+   <script type="text/javascript" src="scripts/login.js"> </script>
+</body>
+
+<style>
+   
+  body{
+    background: #f1f1f1;
+    background-image: url("../img/fondoWeb.jpg");
+  }
+
+  div {
+    border-style: outset;
+  }
+   
+  .pagina{
+    width: 100%;
+    height: 100vh;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+   
+  .login-container{
+    display: flex;
+    width: 650px;
+    height: auto;
+    background: #fff;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .2);
+  }
+   
+  .register, .login{
+    flex: 1;
+  }
+   
+  .register{
+    padding: 40px;
+    position: relative;
+    background-color: grey;
+  }
+
+  .login{
+    background-color: grey;
+    padding: 40px;
+  }
+   
+  .register h2{
+    color:black;
+    margin-bottom: 30px;
+  }
+
+  .login h2{
+    color: black;
+    margin-bottom: 45px;
+  }
+   
+  .register input{
+    width: 100%;
+    padding: 5px;
+    font-size: 16px;
+    margin-bottom: 25px;
+  }
+  
+   .register button{
+    width: 100%;
+    padding: 5px;
+    font-size: 16px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #a8a8a8;
+  }
+
+  .login input{
+    width: 100%;
+    padding: 5px;
+    font-size: 16px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #a8a8a8;
+  }
+
+</style>
+</html>
