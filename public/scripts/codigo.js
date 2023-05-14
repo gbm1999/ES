@@ -60,16 +60,6 @@ function GetFileInfo () {
 	.then( response => {div.textContent = response})
 	.catch(error=>{console.log(error)})
 
-	connection.connect(function(err)
-	{
-	  let sql = "SELECT * FROM archives where name='"+ file.name + "'";
-	  connection.query(sql, function(err, result)
-	  {
-		if(err) throw err;
-		console.log("Archive uploaded");
-		"Hola a todos"; // <div>Hola a todos</div>
-	  })
-	});
 
 	
 }

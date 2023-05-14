@@ -148,7 +148,8 @@ function cogerDatosSesion()
         return response.json(); 
     })
     .then(function(data) {
-        bcrypt.compare(contraseña, data[0].password, function(err, res)
+        console.log(data);
+        bcrypt.compare(contraseña, data.password, function(err, res)
         {
             if(res == true)
             {
