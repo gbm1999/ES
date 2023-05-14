@@ -8,7 +8,7 @@ const path = require('path')
 var fs = require('fs')
 var https = require('https')
 var count = 0;
-
+var count2 = 0;
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '/public')))
@@ -60,8 +60,6 @@ app.post('/register', function(req, res)
             nombre: req.body.name ,
             email: req.body.email ,
             password: req.body.passwd,
-            //archivos
-            //tareas
         };
 
         var json = JSON.stringify(objeto);
@@ -82,13 +80,71 @@ app.post('/register', function(req, res)
 
 app.post('/upload', function(req, res)
 {
-    let sql = "INSERT INTO archives (name, file, user) VALUES ('"+ req.body.name + "', '"+ req.body.file['files'] + "', '"+  req.body.user + "')";
+
+              // Crear el objeto con los datos del archivo y su contenido cifrado
+              var objeto = {
+                nombre: req.body.name ,
+                files: req.body.file['files'] ,
+                user: req.body.user,
+            };
+    
+            var json = JSON.stringify(objeto);
+    
+            // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
+            console.log(json);
+            fs.writeFileSync('./uploads/files' + count2 + '.json', JSON.stringify(json));
+            const dir = './uploads';
+    
+            fs.readdir(dir, (err, files) => {
+              count2 = (files.length);
+            });
+            res(json);
 })
 
 
-app.post('/download', function(req, res)
+app.get('/download', function(req, res)
 {
-    let sql = "SELECT * FROM archives where name='"+ req.body.name + "'";
+    let data 
+    const dir = './uploads';
+    
+    fs.readdir(dir, (err, files) => {
+      count2 = (files.length);
+    });
+      for(let i = 0; i < count2; i++){
+        data = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+        if(data.includes(req.body.name )){
+          break;
+        }
+    
+      }
+    
+      console.log(data);
+    
+      if (!data || !data.includes(req.body.name )) return [];
+      else {
+        const file = JSON.parse(data);
+        console.log(file);
+        res.send(file);
+      }
+})
+
+app.get('/archives', function(req, res)
+{
+    let data = []; 
+    const dir = './uploads';
+    console.log("2");
+    
+    fs.readdir(dir, (err, files) => {
+      count2 = (files.length);
+    });
+      for(let i = 0; i < count2; i++){
+        data += fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+      }
+    
+      const file = JSON.parse(data);
+      console.log(file);
+      res.send(file);
+      
 })
 
 

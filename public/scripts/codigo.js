@@ -56,9 +56,6 @@ function GetFileInfo () {
 
 	const div = document.querySelector("div");  // <div></div>
 
-	fetch( 'http://localhost:5500/download' )
-	.then( response => {div.textContent = response})
-	.catch(error=>{console.log(error)})
 
 
 	
@@ -326,6 +323,46 @@ function generateString(lentgh) {
         false
       );
     }
+
+
+	const options = {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+			},
+		body: JSON.stringify({name: name, file: zip, user: user})
+	};
+
+	fetch( 'http://localhost:5500/upload', options)
+	.then(function(response){
+		return response.json(); 
+	})
+	.catch(error=>{console.log(error)})
+
+	fetch( 'http://localhost:5500/archives', options)
+	.then( response => { 
+		console.log(response);
+		let seccion = document.createElement('section');
+
+		seccion.innerHTML = '<h2>' + nombre + '</h2>';
+		seccion.setAttribute("id", nombre);
+		seccion.setAttribute("class", nombre); 
+	
+		document.querySelector('main').appendChild(seccion);
+	
+		let li = document.createElement('li'); 
+		li.innerHTML = '<a ' + 'href=#' + nombre + '> ' + nombre + ' </a>';
+		//li.setAttribute("id",aux);
+	
+		document.querySelector('ul').appendChild(li);
+		
+		
+		mostrarzipscreados(seccion,seccion.querySelector('h2'),response.nombre,response.descripcion,response.date) ;})
+	.catch(error=>{console.log(error)})
+
+	console.log("hola");
     
   }
   
