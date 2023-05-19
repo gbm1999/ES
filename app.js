@@ -9,6 +9,7 @@ var fs = require('fs')
 var https = require('https')
 var count = 0;
 var count2 = 0;
+var count3 = 0;
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '/public')))
@@ -97,6 +98,29 @@ app.post('/upload', function(req, res)
     
             fs.readdir(dir, (err, files) => {
               count2 = (files.length);
+            });
+            res(json);
+})
+
+app.post('/uploadTask', function(req, res)
+{
+
+              // Crear el objeto con los datos del archivo y su contenido cifrado
+              var objeto = {
+                nombre: req.body.name ,
+                tasks: req.body.tasks['tasks'] ,
+            };
+    
+            var json = JSON.stringify(objeto);
+    
+            // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
+            console.log(json);
+            fs.
+            fs.writeFileSync('./tasks/task' + count3 + '.json', JSON.stringify(json));
+            const dir = './tasks';
+    
+            fs.readdir(dir, (err, files) => {
+              count3 = (files.length);
             });
             res(json);
 })

@@ -239,10 +239,29 @@ function cogerDatos() {
     let input2 = document.createElement('input');
     input2.setAttribute("type", "button");
     input2.setAttribute("value", "Borrar");
-    input2.setAttribute("name", "borrar")
-	input2.setAttribute("class", "borrar")
+    input2.setAttribute("name", "borrar");
+	input2.setAttribute("class", "borrar");
     div.prepend(input2);
+
+	let input5 = document.createElement('input');
+    input5.setAttribute("type", "button");
+	input5.setAttribute("name", "uploadTasks");
+	input5.setAttribute("value", "subir tareas");
+    div.prepend(input5);
+
+	let input4 = document.createElement('input');
+    input4.setAttribute("type", "button");
+	input4.setAttribute("name", "addTask");
+	input4.setAttribute("value", "Añadir tarea");
+    div.prepend(input4);
+
+	let input3 = document.createElement('input');
+    input3.setAttribute("type", "text");
+    div.prepend(input3);
     
+	let label = document.createElement('label');
+	label.textContent = 'Introduce la tarea:';
+	div.prepend(label);
 	
 	div2.innerHTML = "Nombre: " + nombre + "<br/>Descripción: " + descripcion + "<br/>Fecha: " + fecha;
 	div.prepend(div2);
@@ -253,7 +272,12 @@ function cogerDatos() {
 	
 	let e = seccion.querySelector('.informacion input[name="borrar"]');
     e.addEventListener('click', borrazip, false);
-	
+
+	let e2 = seccion.querySelector('.informacion input[name="addTask"]');
+    e2.addEventListener('click', addTask, false);
+
+	let e3 = seccion.querySelector('.informacion input[name="uploadTasks"]');
+    e3.addEventListener('click', uploadTasks, false);
 
   }
   
@@ -271,7 +295,14 @@ function cogerDatos() {
     }
   }
   
-  
+  function addTask(event) {
+
+  }
+
+  function uploadTasks(event) {
+
+  }
+
   function borrazip(event)
   {
     let seccion = queryAncestorSelector(event.currentTarget, "section");
@@ -335,11 +366,6 @@ function generateString(lentgh) {
 		body: JSON.stringify({name: name, file: zip, user: user})
 	};
 
-	fetch( 'http://localhost:5500/upload', options)
-	.then(function(response){
-		return response.json(); 
-	})
-	.catch(error=>{console.log(error)})
 
 	fetch( 'http://localhost:5500/archives', options)
 	.then( response => { 
