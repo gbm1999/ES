@@ -2,7 +2,7 @@ var zip
 var fileInput
 var file
 var blobZip
-var sec
+
 //Function to show selected files. Their name and size.
 
 function GetFileInfo () {
@@ -271,7 +271,6 @@ function cogerDatos() {
 	
 	
     seccion.insertBefore(div, h2.nextSibling);
-	sec = seccion;
 	
 	let e = seccion.querySelector('.informacion input[name="borrar"]');
     e.addEventListener('click', borrazip, false);
@@ -300,14 +299,15 @@ function cogerDatos() {
   
   function addTask(event) {
 	let div = document.createElement('div');
+	let seccion = queryAncestorSelector(event.currentTarget, "section");
 
-	let e = document.getElementsByClassName("taskTxt")[0].value;
+	let e = seccion.getElementsByClassName("taskTxt")[0].value;
 
 	console.log(e);
 
 	div.innerHTML = "Tarea: " + e + "<br/>";
 
-	sec.appendChild(div);
+	seccion.appendChild(div);
   }
 
   function uploadTasks(event) {
