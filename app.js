@@ -108,14 +108,13 @@ app.post('/uploadTask', function(req, res)
               // Crear el objeto con los datos del archivo y su contenido cifrado
               var objeto = {
                 nombre: req.body.name ,
-                tasks: req.body.tasks['tasks'] ,
+                tasks: req.body.tasks ,
             };
     
             var json = JSON.stringify(objeto);
     
             // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
             console.log(json);
-            fs.
             fs.writeFileSync('./tasks/task' + count3 + '.json', JSON.stringify(json));
             const dir = './tasks';
     

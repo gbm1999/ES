@@ -306,12 +306,35 @@ function cogerDatos() {
 	console.log(e);
 
 	div.innerHTML = "Tarea: " + e + "<br/>";
+	div.setAttribute("class", "task");
 
 	seccion.appendChild(div);
   }
 
   function uploadTasks(event) {
+	let seccion = queryAncestorSelector(event.currentTarget, "section");
+	let name = seccion.querySelector('h2').value;
+	let array = [];
 
+	seccion.querySelectorAll('.task').forEach(item => {
+		array.push(item.innerHTML);
+	});
+	
+
+	const options = {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+			},
+		body: JSON.stringify({name: name, tasks: array})
+	};
+
+	fetch( 'http://localhost:5500/uploadTask', options)
+	.then( response => { 
+		console.log(response);})
+	.catch(error=>{console.log(error)})
   }
 
   function borrazip(event)
@@ -398,8 +421,6 @@ function generateString(lentgh) {
 		
 		mostrarzipscreados(seccion,seccion.querySelector('h2'),response.nombre,response.descripcion,response.date) ;})
 	.catch(error=>{console.log(error)})
-
-	console.log("hola");
     
   }
   
