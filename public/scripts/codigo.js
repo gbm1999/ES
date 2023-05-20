@@ -93,7 +93,6 @@ async function onSubmit(event)
 	
 	 //Cifrado Decifrado
 		console.log('Start encryption');
-		console.log(blob);
 		var reader = new FileReader();                                              //Esta linea nos ayuda a leer el contenido de nuestros archivos
 		reader.onload = () => {     
 
@@ -128,15 +127,12 @@ const makeZip = (json,name) => {
 	const valores = window.location.search;
 
 //Mostramos los valores en consola:
-console.log(valores);
 
 //Creamos la instancia
 const urlParams = new URLSearchParams(valores);
 
 //Accedemos a los valores
 var user = urlParams.get('email');
-
-console.log(user);
 
 	const options = {
 		method: 'POST',
@@ -303,8 +299,6 @@ function cogerDatos() {
 
 	let e = seccion.getElementsByClassName("taskTxt")[0].value;
 
-	console.log(e);
-
 	div.innerHTML = "Tarea: " + e + "<br/>";
 	div.setAttribute("class", "task");
 
@@ -313,13 +307,21 @@ function cogerDatos() {
 
   function uploadTasks(event) {
 	let seccion = queryAncestorSelector(event.currentTarget, "section");
-	let name = seccion.querySelector('h2').value;
+	let name = seccion.querySelector('h2').innerHTML;
 	let array = [];
 
 	seccion.querySelectorAll('.task').forEach(item => {
 		array.push(item.innerHTML);
 	});
 	
+	const valores = window.location.search;
+	const urlParams = new URLSearchParams(valores);
+
+	//Accedemos a los valores
+	var user = urlParams.get('email');
+
+	console.log(name);
+	console.log(user);
 
 	const options = {
 		method: 'POST',
@@ -328,13 +330,17 @@ function cogerDatos() {
 			'Content-Type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
 			},
-		body: JSON.stringify({name: name, tasks: array})
+		body: JSON.stringify({name: name, tasks: array, user: user})
 	};
 
 	fetch( 'http://localhost:5500/uploadTask', options)
 	.then( response => { 
 		console.log(response);})
 	.catch(error=>{console.log(error)})
+
+	let but = seccion.querySelectorAll('.uploadTasks');
+	but.remove();
+
   }
 
   function borrazip(event)
@@ -403,7 +409,6 @@ function generateString(lentgh) {
 
 	fetch( 'http://localhost:5500/archives', options)
 	.then( response => { 
-		console.log(response);
 		let seccion = document.createElement('section');
 
 		seccion.innerHTML = '<h2>' + nombre + '</h2>';

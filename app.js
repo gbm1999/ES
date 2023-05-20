@@ -99,7 +99,6 @@ app.post('/upload', function(req, res)
             fs.readdir(dir, (err, files) => {
               count2 = (files.length);
             });
-            res(json);
 })
 
 app.post('/uploadTask', function(req, res)
@@ -109,6 +108,7 @@ app.post('/uploadTask', function(req, res)
               var objeto = {
                 nombre: req.body.name ,
                 tasks: req.body.tasks ,
+                user: req.body.user
             };
     
             var json = JSON.stringify(objeto);
@@ -121,7 +121,6 @@ app.post('/uploadTask', function(req, res)
             fs.readdir(dir, (err, files) => {
               count3 = (files.length);
             });
-            res(json);
 })
 
 
