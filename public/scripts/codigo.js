@@ -422,6 +422,13 @@ function generateString(lentgh) {
 		//li.setAttribute("id",aux);
 	
 		document.querySelector('ul').appendChild(li);
+
+		fetch("files0.json").then(response => response.json())
+		.then(data => {
+			console.log(data.nombre);
+			mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.descripcion,data.date)
+  
+		})
 		
 		
 		mostrarzipscreados(seccion,seccion.querySelector('h2'),response.nombre,response.descripcion,response.date) ;})
