@@ -132,15 +132,23 @@ app.get('/archives', function(req, res)
     
     fs.readdir(dir, (err, files) => {
       count2 = (files.length);
-    });
-      for(let i = 0; i < count2; i++){
-        data += fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+    }); 
+    for(let i = 0; i < count2; i++){
+      data = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+      if(data.includes(req.body.user )){
+        break;
       }
-    
+  
+    }
+  
+    if (!data || !data.includes(req.body.user )) return [];
+    else {
       const file = JSON.parse(data);
+      console.log(file);
       res.send(file);
-      
+    }
 })
+      
 
 
 
