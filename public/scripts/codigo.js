@@ -418,22 +418,23 @@ var user = urlParams.get('email');
 		.then( response => { 
 			console.log(response);
 			response.json().then((data) => {
-
-				let seccion = document.createElement('section');
+				if(data != null){
+					let seccion = document.createElement('section');
 		
-				seccion.innerHTML = '<h2>' + data.nombre + '</h2>';
-				seccion.setAttribute("id", data.nombre);
-				seccion.setAttribute("class", data.nombre); 
-			
-				document.querySelector('main').appendChild(seccion);
-			
-				let li = document.createElement('li'); 
-				li.innerHTML = '<a ' + 'href=#' + data.nombre + '> ' + data.nombre + ' </a>';
-				//li.setAttribute("id",aux);
-			
-				document.querySelector('ul').appendChild(li);
+					seccion.innerHTML = '<h2>' + data.nombre + '</h2>';
+					seccion.setAttribute("id", data.nombre);
+					seccion.setAttribute("class", data.nombre); 
 				
-				mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.descripcion,data.date) ;
+					document.querySelector('main').appendChild(seccion);
+				
+					let li = document.createElement('li'); 
+					li.innerHTML = '<a ' + 'href=#' + data.nombre + '> ' + data.nombre + ' </a>';
+					//li.setAttribute("id",aux);
+				
+					document.querySelector('ul').appendChild(li);
+					
+					mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.descripcion,data.date) ;
+				}
 			});
 })
 		.catch(error=>{console.log(error)})
