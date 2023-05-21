@@ -124,32 +124,6 @@ app.post('/uploadTask', function(req, res)
 })
 
 
-app.get('/download', function(req, res)
-{
-    let data 
-    const dir = './uploads';
-    
-    fs.readdir(dir, (err, files) => {
-      count2 = (files.length);
-    });
-      for(let i = 0; i < count2; i++){
-        data = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-        if(data.includes(req.body.name )){
-          break;
-        }
-    
-      }
-    
-      console.log(data);
-    
-      if (!data || !data.includes(req.body.name )) return [];
-      else {
-        const file = JSON.parse(data);
-        console.log(file);
-        res.send(file);
-      }
-})
-
 app.get('/archives', function(req, res)
 {
     let data = []; 
@@ -164,7 +138,6 @@ app.get('/archives', function(req, res)
       }
     
       const file = JSON.parse(data);
-      console.log(file);
       res.send(file);
       
 })

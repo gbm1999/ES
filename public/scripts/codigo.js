@@ -378,7 +378,7 @@ function generateString(lentgh) {
 }
 
 
-  function init() {
+  async function init() {
 	let submit = document.querySelector('#btnSubmit');
 	submit.addEventListener('click', onSubmit, false);
     let e = document.querySelector('#nuevozip input[name="crea"]');
@@ -395,7 +395,14 @@ function generateString(lentgh) {
       );
     }
 
+	const valores = window.location.search;
+	//Creamos la instancia
+const urlParams = new URLSearchParams(valores);
 
+//Accedemos a los valores
+var user = urlParams.get('email');
+
+let nombre = document.querySelector('#inputName').value;
 	const options = {
 		method: 'POST',
 		headers: {
@@ -407,32 +414,30 @@ function generateString(lentgh) {
 	};
 
 
-	fetch( 'http://localhost:5500/archives', options)
-	.then( response => { 
-		let seccion = document.createElement('section');
 
-		seccion.innerHTML = '<h2>' + nombre + '</h2>';
-		seccion.setAttribute("id", nombre);
-		seccion.setAttribute("class", nombre); 
+		fetch( 'http://localhost:5500/archives', options)
+		.then( response => { 
+			let seccion = document.createElement('section');
 	
-		document.querySelector('main').appendChild(seccion);
-	
-		let li = document.createElement('li'); 
-		li.innerHTML = '<a ' + 'href=#' + nombre + '> ' + nombre + ' </a>';
-		//li.setAttribute("id",aux);
-	
-		document.querySelector('ul').appendChild(li);
+			seccion.innerHTML = '<h2>' + nombre + '</h2>';
+			seccion.setAttribute("id", nombre);
+			seccion.setAttribute("class", nombre); 
+		
+			document.querySelector('main').appendChild(seccion);
+		
+			let li = document.createElement('li'); 
+			li.innerHTML = '<a ' + 'href=#' + nombre + '> ' + nombre + ' </a>';
+			//li.setAttribute("id",aux);
+		
+			document.querySelector('ul').appendChild(li);
+			
+			mostrarzipscreados(seccion,seccion.querySelector('h2'),response.nombre,response.descripcion,response.date) ;})
+		.catch(error=>{console.log(error)})
 
-		fetch("files0.json").then(response => response.json())
-		.then(data => {
-			console.log(data.nombre);
-			mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.descripcion,data.date)
-  
-		})
+
 		
-		
-		mostrarzipscreados(seccion,seccion.querySelector('h2'),response.nombre,response.descripcion,response.date) ;})
-	.catch(error=>{console.log(error)})
+
+
     
   }
   
