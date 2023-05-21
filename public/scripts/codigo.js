@@ -414,24 +414,28 @@ var user = urlParams.get('email');
 
 
 
-		fetch( 'http://localhost:5500/archives', options)
+		fetch( 'http://localhost:5500/archive', options)
 		.then( response => { 
 			console.log(response);
-			let seccion = document.createElement('section');
-	
-			seccion.innerHTML = '<h2>' + response.nombre + '</h2>';
-			seccion.setAttribute("id", response.nombre);
-			seccion.setAttribute("class", response.nombre); 
+			response.json().then((data) => {
+
+				let seccion = document.createElement('section');
 		
-			document.querySelector('main').appendChild(seccion);
-		
-			let li = document.createElement('li'); 
-			li.innerHTML = '<a ' + 'href=#' + response.nombre + '> ' + response.nombre + ' </a>';
-			//li.setAttribute("id",aux);
-		
-			document.querySelector('ul').appendChild(li);
+				seccion.innerHTML = '<h2>' + data.nombre + '</h2>';
+				seccion.setAttribute("id", data.nombre);
+				seccion.setAttribute("class", data.nombre); 
 			
-			mostrarzipscreados(seccion,seccion.querySelector('h2'),response.nombre,response.descripcion,response.date) ;})
+				document.querySelector('main').appendChild(seccion);
+			
+				let li = document.createElement('li'); 
+				li.innerHTML = '<a ' + 'href=#' + data.nombre + '> ' + data.nombre + ' </a>';
+				//li.setAttribute("id",aux);
+			
+				document.querySelector('ul').appendChild(li);
+				
+				mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.descripcion,data.date) ;
+			});
+})
 		.catch(error=>{console.log(error)})
 
 

@@ -124,7 +124,7 @@ app.post('/uploadTask', function(req, res)
 })
 
 
-app.get('/archives', function(req, res)
+app.post('/archive', function(req, res)
 {
     let data = []; 
     const dir = './uploads';
