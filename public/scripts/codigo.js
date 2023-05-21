@@ -402,7 +402,6 @@ const urlParams = new URLSearchParams(valores);
 //Accedemos a los valores
 var user = urlParams.get('email');
 
-let nombre = document.querySelector('#inputName').value;
 	const options = {
 		method: 'POST',
 		headers: {
@@ -410,23 +409,24 @@ let nombre = document.querySelector('#inputName').value;
 			'Content-Type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
 			},
-		body: JSON.stringify({name: name, file: zip, user: user})
+		body: JSON.stringify({user: user})
 	};
 
 
 
 		fetch( 'http://localhost:5500/archives', options)
 		.then( response => { 
+			console.log(response);
 			let seccion = document.createElement('section');
 	
-			seccion.innerHTML = '<h2>' + nombre + '</h2>';
-			seccion.setAttribute("id", nombre);
-			seccion.setAttribute("class", nombre); 
+			seccion.innerHTML = '<h2>' + response.nombre + '</h2>';
+			seccion.setAttribute("id", response.nombre);
+			seccion.setAttribute("class", response.nombre); 
 		
 			document.querySelector('main').appendChild(seccion);
 		
 			let li = document.createElement('li'); 
-			li.innerHTML = '<a ' + 'href=#' + nombre + '> ' + nombre + ' </a>';
+			li.innerHTML = '<a ' + 'href=#' + response.nombre + '> ' + response.nombre + ' </a>';
 			//li.setAttribute("id",aux);
 		
 			document.querySelector('ul').appendChild(li);
