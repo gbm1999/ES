@@ -1,7 +1,5 @@
-if(!bcrypt)
-{
-    var bcrypt = require(['bcrypt']);
-}
+var bcrypt = require(['bcrypt']);
+// var NodeRSA = require(['node-rsa'])
 
 function validaVacio(valor) {
     valor = valor.replace("&nbsp;", "");
@@ -33,7 +31,67 @@ function validarContra(valor) {
     return false;
     
 }
-  
+
+// Función para generar un par de claves pública y privada utilizando RSA
+async function generateRSAKeys() {
+
+    const key = new node-rsa({ b: 1024 });
+
+    var publicKey = key.exportKey('public');
+    var privateKey = key.exportKey('private');
+
+    console.log('Clave generada en generate: ' + publicKey);
+    /*let claves = []
+    let { publicKey, privateKey } = await Crypto.subtle.generateKey(
+        //Algoritmo de definicion de claves y sus parámetros
+        {
+            name: 'RSA-OAEP',                                           // Utilizampos el algoritmo RSA con esquema de cifrado OAEP
+            modulusLength: 2048,                                        // Longitud del módulo de 2048b. Es un estándar común para claves RSA
+            publicExponent: new Uint8Array([0x01, 0x00, 0x01]),         // Representa el vlaor decimal 65537, que es un exponente público que se considera seguro
+            hash: { name: 'SHA-256' },                                  // Utilizamos SHA-256 como función hash en el esquema de cifrado
+        },
+        // Colocamos 'extractable' a true para poder extraer la clave de la API Web Crypto
+        true,
+        // Especificamos que los usos previstos para la clave serán tanto encriptar como desencriptar
+        ['encrypt', 'decrypt']
+    );
+    console.log('ClaveGenerada: ' + publicKey);
+    
+
+    // Se exporta de la API en formato "spki" (Subject Public Key Info)
+    let exportedPublicKey = await Crypto.subtle.exportKey('spki', publicKey);
+    console.log(exportedPublicKey);
+    // Se exporta de la API en formato "pkcs8" (Private-Key Cryptography Standard #8)
+    let exportedPrivateKey = await Crypto.subtle.exportKey('pkcs8', privateKey);
+
+    claves[0] = arrayBufferToBase64String(exportedPublicKey);
+    claves[1] = arrayBufferToBase64String(exportedPrivateKey);
+    console.log('ClaveArray' + claves[0] + ' ClaveArray2: '  + claves[1]);
+
+    return claves;
+    return {
+        publicKey: arrayBufferToBase64String(exportedPublicKey),
+        privateKey: arrayBufferToBase64String(exportedPrivateKey),
+    };*/
+}
+
+
+// Función para encriptar la clave privada con la contraseña de acceso a la aplicación
+function encryptPrivateKey(privateKey, password) {
+    var encryptedPrivateKey = Crypto.AES.encrypt(privateKey, password);
+    return encryptedPrivateKey;
+}
+
+// convierte un ArrayBuffer en una cadena de texto en formato Base64
+function arrayBufferToBase64String(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);                 // codifica la cadena binaria en formato Base64.
+}
 
 function cogerDatosRegistro() 
 {   
@@ -42,6 +100,7 @@ function cogerDatosRegistro()
 	let contraseña = document.querySelector('#contra').value;
     let confirmcontra = document.querySelector('#confcontra').value;
     let passwdHashed = '';
+    let claves = [];      //Si los parámetros de registro son correctos, aquí se almacenarán las claves pública/privada del usuario
 
     if(validaVacio(nombre) || validaVacio(correo) || validaVacio(contraseña) || validaVacio(confirmcontra))
     {
@@ -79,14 +138,25 @@ function cogerDatosRegistro()
                 }
             }
         }
+        console.log("Vamo a generar las claves");
+        //Generamos el par de claves pública/privada
+        claves = generateRSAKeys();
+        console.log("clavePub:" + claves[0]);
+        // Encriptar la clave privada con la contraseña de acceso a la aplicación
+        let encryptedPrivateKey = encryptPrivateKey(claves[1], contraseña);
+        // Almacenar la clave privada en el archivo de datos principal cifrado
+        // con la contraseña de acceso a la aplicación
+        fs.writeFileSync('/pubKeys/' + correo + '.pem', claves[0]);
 
         bcrypt.genSalt(10, function(err, salt){
             bcrypt.hash(contraseña, salt, function(err, hash) {
                 console.log(salt)
+                console.log(keys.publicKey)
                 const params = {
                     'name': nombre,
                     'email': correo,
-                    'passwd': hash
+                    'passwd': hash,
+                    'publicKey': claves[1]
                 };
         
                 const options = {
@@ -174,4 +244,4 @@ function init() {
     
   }
   
-document.addEventListener('DOMContentLoaded',init,false);
+//document.addEventListener('DOMContentLoaded',init,false);

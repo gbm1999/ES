@@ -69,7 +69,7 @@ async function onSubmit(event)
 	//let stream = await fileHandle.createWritable();
 	blobZip = new Blob()
 	var fileEnc = new Blob()
-  var encrypted 
+	var encrypted 
 	let jsonData = {
 		'metadatos' :[]
 	};
@@ -126,13 +126,11 @@ const makeZip = (json,name) => {
 
 	const valores = window.location.search;
 
-//Mostramos los valores en consola:
+	//Creamos la instancia
+	const urlParams = new URLSearchParams(valores);
 
-//Creamos la instancia
-const urlParams = new URLSearchParams(valores);
-
-//Accedemos a los valores
-var user = urlParams.get('email');
+	//Accedemos a los valores
+	var user = urlParams.get('email');
 
 	const options = {
 		method: 'POST',
@@ -376,7 +374,6 @@ function generateString(lentgh) {
   
 	return text;
 }
-
 
   async function init() {
 	let submit = document.querySelector('#btnSubmit');
