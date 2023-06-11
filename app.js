@@ -15,6 +15,7 @@ var count3 = 0;
 
 var enncrypt = [];
 var deecrypt;
+const passphrase = process.env.ACCESS_TOKEN_SECRET;
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '/public')))
@@ -62,8 +63,8 @@ app.post('/register', function(req, res)
 
       //Generamos clave privada de B
       const encrypt = (text) => {
-        //generate encryption key using the secret.
-        crypto.scrypt(process.env.ACCESS_TOKEN_SECRET, 'salt', 24, (err, key) => {
+        //generate encryption key using the secret. (env.token.secret)
+        crypto.scrypt(passphrase, 'salt', 24, (err, key) => {
           if (err) throw err;
       
           //create an initialization vector
@@ -223,9 +224,9 @@ app.post('/getTask', function(req, res)
       })
     })
   }
-  const passphrase = process.env.ACCESS_TOKEN_SECRET;
+
   for(let i = 0; i < enncrypt.length; i++){
-    decrypt(enncrypt[i], req.body.privateKey, passphrase)
+    decrypt(enncrypt[i], req.body.privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
       .then(str => console.log(str))
       .catch(err => console.log(err))
 
