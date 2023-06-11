@@ -57,13 +57,11 @@ fs.readdir(dir, (err, files) => {
 
 app.post('/register', function(req, res)
 {
-
-      console.log("User registered");
-      res.redirect('archives.html ?id=" + this.id "');
-
       //Generamos clave privada de B
+      const algorithm = "aes-192-cbc";
+
       const encrypt = (text) => {
-        //generate encryption key using the secret. (env.token.secret)
+        //generate encryption key using the secret.
         crypto.scrypt(passphrase, 'salt', 24, (err, key) => {
           if (err) throw err;
       
@@ -85,7 +83,9 @@ app.post('/register', function(req, res)
           });
         });
       }
-      var privateKey = encrypt(req.body.passwd);
+      
+      var privateKey;
+      console.log(privateKey = encrypt(req.body.passwd))
 
 
           // Crear el objeto con los datos del archivo y su contenido cifrado
@@ -96,6 +96,7 @@ app.post('/register', function(req, res)
             privateKey: privateKey,
         };
 
+        console.log(objeto)
         var json = JSON.stringify(objeto);
 
         // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
@@ -106,6 +107,9 @@ app.post('/register', function(req, res)
         fs.readdir(dir, (err, files) => {
           count = (files.length);
         });
+
+        console.log("User registered");
+        res.redirect('archives.html ?id=" + this.id "');
 })
 
 /*
@@ -157,8 +161,6 @@ app.post('/uploadTask', function(req, res)
 
 
   const crypto = require("crypto");
-
-  const algorithm = "aes-192-cbc";
 
   //A encripta con la clave pública de B
   
