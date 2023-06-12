@@ -178,11 +178,11 @@ app.post('/uploadTask', function(req, res)
     const encrypt = (text, pkPath) => {
       return new Promise((resolve, reject) => {
         const absPkPath = path.resolve(pkPath)
-        fs.readFile(absPkPath, 'utf8', (pk, err) => {
+        fs.readFile(absPkPath, 'utf8', (err, pk) => {
           if (err) {
             return reject(err)
-          }
-          const buffer = Buffer.from(text, 'utf8')
+          }    
+          const buffer = Buffer.from(text)
           const encrypted = crypto.publicEncrypt(pk, buffer)
           resolve(encrypted.toString('base64'))
         })
@@ -208,6 +208,8 @@ app.post('/uploadTask', function(req, res)
     }
     // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
 
+    console.log(JSON.stringify(json))
+    JSON.stringify(pubKey)
     encrypt(JSON.stringify(json), pubKey)
     .then(str =>{console.log(str)
       fs.writeFileSync('./tasks/task' + count3 + '.json', str.toString());
