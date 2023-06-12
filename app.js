@@ -121,14 +121,17 @@ app.post('/upload', function(req, res)
     const encrypt = (text, pkPath) => {
       return new Promise((resolve, reject) => {
         const absPkPath = path.resolve(pkPath)
-        console.log(absPkPath);
         fs.readFile(absPkPath, 'utf8', (err, pk) => {
           if (err) {
             return reject(err)
           }
+          console.log(pk);
     
           const buffer = Buffer.from(text, 'utf8')
-          const encrypted = crypto.publicEncrypt(pk, buffer)
+          const encrypted = crypto.publicEncrypt({
+            key: pk,
+            padding: crypto.constants.RSA_NO_PADDING
+        }, new Buffer(text))
           resolve(encrypted.toString('base64'))
         })
       })
@@ -165,11 +168,11 @@ app.post('/uploadTask', function(req, res)
     const encrypt = (text, pkPath) => {
       return new Promise((resolve, reject) => {
         const absPkPath = path.resolve(pkPath)
-        fs.readFile(absPkPath, 'utf8', (err, pk) => {
+        fs.readFile(absPkPath, 'utf8', (pk, err) => {
           if (err) {
             return reject(err)
           }
-    
+          console.log(pk);
           const buffer = Buffer.from(text, 'utf8')
           const encrypted = crypto.publicEncrypt(pk, buffer)
           resolve(encrypted.toString('base64'))
