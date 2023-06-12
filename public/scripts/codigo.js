@@ -352,6 +352,7 @@ function cogerDatos() {
   }
 
   function getTask(event) {
+	let seccion = queryAncestorSelector(event.currentTarget, "section");
 	const valores = window.location.search;
 	const urlParams = new URLSearchParams(valores);
 
@@ -376,8 +377,8 @@ function cogerDatos() {
 		console.log(response);
 		response.json().then((data) => {
 			if(data != null){
+				console.log(data);
 				let div = document.createElement('div');
-				let seccion = document.querySelector('#'+ data.nombre);
 			
 				let e = data.tasks[0];;
 			
