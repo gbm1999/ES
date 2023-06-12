@@ -128,10 +128,7 @@ app.post('/upload', function(req, res)
           console.log(pk);
     
           const buffer = Buffer.from(text, 'utf8')
-          const encrypted = crypto.publicEncrypt({
-            key: pk,
-            padding: crypto.constants.RSA_NO_PADDING
-        }, new Buffer(text))
+          const encrypted = crypto.publicEncrypt(pk, buffer)
           resolve(encrypted.toString('base64'))
         })
       })
@@ -148,16 +145,19 @@ app.post('/upload', function(req, res)
     
             // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
             //console.log(json);
-            let dataEncrypted = encrypt(JSON.stringify(json), "public.key.pem")
-            .then(str => console.log(str))
+            encrypt(JSON.stringify(json), "public.key.pem")
+            .then(str => {
+              fs.writeFileSync('./uploads/files' + count2 + '.json', str.toString());
+              const dir = './uploads';
+      
+              fs.readdir(dir, (err, files) => {
+                count2 = (files.length);
+              });
+            })
             .catch(err => console.log(err))
 
-            fs.writeFileSync('./uploads/files' + count2 + '.json', dataEncrypted.toString());
-            const dir = './uploads';
-    
-            fs.readdir(dir, (err, files) => {
-              count2 = (files.length);
-            });
+
+            
 })
 
 app.post('/uploadTask', function(req, res)
@@ -172,7 +172,6 @@ app.post('/uploadTask', function(req, res)
           if (err) {
             return reject(err)
           }
-          console.log(pk);
           const buffer = Buffer.from(text, 'utf8')
           const encrypted = crypto.publicEncrypt(pk, buffer)
           resolve(encrypted.toString('base64'))

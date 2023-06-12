@@ -122,8 +122,6 @@ async function onSubmit(event)
 }
 
 const makeZip = (json,name) => {
-	zip.file("metadatos.json", json);
-
 	const valores = window.location.search;
 
 //Mostramos los valores en consola:
