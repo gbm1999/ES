@@ -52,61 +52,57 @@ fs.readdir(dir, (err, files) => {
 });
 
 
+// Using a function generateKeyFiles
+function generateKeyFiles(password) {
+  var keyPair= crypto.generateKeyPairSync('rsa', {
+      modulusLength: 2048,
+      publicKeyEncoding: {
+          type: 'spki',
+          format: 'pem',
+          passphrase: password
+      },
+      privateKeyEncoding: {
+      type: 'pkcs8',
+      format: 'pem',
+      cipher: 'aes-256-cbc',
+      passphrase: password
+      }
+  });
+  return keyPair;
+}
+
+
 app.post('/register', function(req, res)
 {
-      //Generamos clave privada de B
-
-      const algorithm = "aes-192-cbc";
-      
-      const encryptPrivateKey = async (text) => {
-        //generate encryption key using the secret.
-        await crypto.scrypt(passphrase, 'salt', 24, (err, key) => {
-          if (err) throw err;
-          console.log(1);
-          //create an initialization vector
-          crypto.randomFill(new Uint8Array(16), (err, iv) => {
-            if (err) throw err;
-            console.log(2);
-            const cipher = crypto.createCipheriv(algorithm, key, iv);
-      
-            let encrypted = '';
-            cipher.setEncoding('hex');
-      
-            cipher.on('data', (chunk) => encrypted += chunk);
-            cipher.on('end', () => console.log(encrypted))
-            cipher.on('error', (err) => console.log(err))
-      
-            cipher.write(text);
-            cipher.end();
-            console.log(3);
+      //Generamos claves privada y publica de B
+      console.log({publicKey, privateKey} = generateKeyFiles(req.body.passwd));
 
 
             var objeto = {
               nombre: req.body.name ,
               email: req.body.email ,
               password: req.body.passwd,
-              privateKey: encrypted,
+              publicKey: publicKey,
           };
-  
+          //Reiniciamos
           console.log(objeto)
           var json = JSON.stringify(objeto);
   
           // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
           console.log(json);
           fs.writeFileSync('./memory/register' + count + '.json', JSON.stringify(json));
-          const dir = './memory';
-  
+
+                    // Creating public key and private key
+          fs.writeFileSync('./publicKeys/public' + count + '.key.pem' , publicKey);
+          fs.writeFileSync('./privateKeys/private' + count + '.key' , privateKey);
+
+          let dir = './memory';  
           fs.readdir(dir, (err, files) => {
             count = (files.length);
           });
   
           console.log("User registered");
-          res.redirect('archives.html ?id=" + this.id "');
-          });
-        });
-      }
-      
-      encryptPrivateKey(req.body.passwd);
+          res.redirect('archives.html?email=' + req.body.email);
 })
 
 /*
@@ -124,10 +120,8 @@ app.post('/upload', function(req, res)
         fs.readFile(absPkPath, 'utf8', (err, pk) => {
           if (err) {
             return reject(err)
-          }
-          console.log(pk);
-    
-          const buffer = Buffer.from(text, 'utf8')
+          }    
+          const buffer = Buffer.from(text)
           const encrypted = crypto.publicEncrypt(pk, buffer)
           resolve(encrypted.toString('base64'))
         })
@@ -137,15 +131,32 @@ app.post('/upload', function(req, res)
               // Crear el objeto con los datos del archivo y su contenido cifrado
               var objeto = {
                 nombre: req.body.name ,
-                files: req.body.file['files'] ,
+                desc: req.body.desc,
+                date: req.body.date,
                 user: req.body.user,
             };
             console.log(req.body);
             var json = JSON.stringify(objeto);
+
+            let data 
+            const dir = './memory';
+            
+            fs.readdir(dir, (err, files) => {
+              count = (files.length);
+            });
+            var pubKey = "";
+              for(let i = 0; i < count; i++){
+                data = fs.readFileSync('./memory/register' + i + '.json', 'utf8');
+                if(data.includes(req.body.user )){
+                  pubKey = './publicKeys/public' + i + '.key.pem';
+                }
+            
+              }
     
             // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
             //console.log(json);
-            encrypt(JSON.stringify(json), "public.key.pem")
+            console.log(pubKey);
+            encrypt(JSON.stringify(json), pubKey)
             .then(str => {
               fs.writeFileSync('./uploads/files' + count2 + '.json', str.toString());
               const dir = './uploads';
@@ -190,7 +201,11 @@ app.post('/uploadTask', function(req, res)
 
     // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
     console.log(json);
-    let dataEncrypted = encrypt(JSON.stringify(json), "public.key.pem")
+    if(dataEncrypt.includes(req.body.user )){
+
+    }
+
+    let dataEncrypted = encrypt(JSON.stringify(json), publicKey)
     .then(str => console.log(str))
     .catch(err => console.log(err))
 
@@ -239,11 +254,11 @@ app.post('/getTask', function(req, res)
   }); 
   for(let i = 0; i < count2; i++){
     dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-    decrypt(dataEncrypt, req.body.privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
+    decrypt(dataEncrypt, privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
     .then(str => console.log(str))
     .catch(err => console.log(err))
 
-    if(data.includes(req.body.user )){
+    if(dataEncrypt.includes(req.body.user )){
       break;
     }
 

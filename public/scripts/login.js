@@ -99,7 +99,7 @@ function cogerDatosRegistro()
                 };
         
                 fetch( 'http://localhost:5505/register', options )
-                .then( response => { location.href = 'archives.html';})
+                .then( response => { location.href = 'archives.html?email=' + correo+ '';})
                 .catch(error=>{console.log(error)})
             })
         });

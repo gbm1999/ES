@@ -2,6 +2,8 @@ var zip
 var fileInput
 var file
 var blobZip
+var desc 
+var date 
 
 //Function to show selected files. Their name and size.
 
@@ -75,8 +77,8 @@ async function onSubmit(event)
 	};
 
 	let name = document.querySelector('#inputName').value;
-	let desc = document.querySelector('#inputDesc').value;
-	let date = document.querySelector('#inputDate').value;
+	desc = document.querySelector('#inputDesc').value;
+	date = document.querySelector('#inputDate').value;
 	
 	jsonData.metadatos.push(
 		{
@@ -139,8 +141,10 @@ var user = urlParams.get('email');
 			'Content-Type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
 			},
-		body: JSON.stringify({name: name, file: zip, user: user})
+		body: JSON.stringify({name: name, desc: desc, date: date, user: user})
 	};
+
+	console.log(options);
 
 	fetch( 'http://localhost:5505/upload', options)
 	.then(function(response){
