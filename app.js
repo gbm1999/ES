@@ -330,7 +330,9 @@ app.post('/archive', function(req, res)
         }
         else{
         privateKey = './privateKeys/private' + j + '.key';
+        console.log(dataEncrypt)
         console.log(privateKey)
+        console.log(req.body.user)
         decrypt(dataEncrypt, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
         .then(str => 
           {console.log(str)
