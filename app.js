@@ -170,7 +170,6 @@ app.post('/upload', function(req, res)
 
             
 })
-
 app.post('/uploadTask', function(req, res)
 {
 
@@ -219,19 +218,13 @@ app.post('/uploadTask', function(req, res)
       });
     } )
     .catch(err => console.log(err))
-
-
-
-
-  const crypto = require("crypto");
-
 })
 
 app.post('/getTask', function(req, res)
 {
 
   let data = []; 
-  const dir = './uploads';
+  let dir = './uploads';
   console.log("2");
   console.log(req.body);
 
@@ -256,21 +249,25 @@ app.post('/getTask', function(req, res)
     })
   }
   
+  dir = './tasks';
+  
   fs.readdir(dir, (err, files) => {
-    count2 = (files.length);
-  }); 
+    count3 = (files.length);
+  });
   for(let j = 0; j < count; j++){
-    for(let i = 0; i < count2; i++){
-      dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-      privateKey = fs.readFileSync('./privateKeys/private' + i + '.key', 'utf8');
-      decrypt(dataEncrypt, privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
-      .then(str => console.log(str))
+    for(let i = 0; i < count3; i++){
+      dataEncrypt = fs.readFileSync('./tasks/task' + i + '.json', 'utf8');
+      privateKey = './privateKeys/private' + j + '.key'; 
+      decrypt(dataEncrypt, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
+      .then(str => 
+        {console.log(str)
+            const file = JSON.parse(str);
+            if(file.includes(req.body.user )){
+              console.log(file);
+              res.send(file);
+            }
+      })
       .catch(err => console.log(err))
-
-      if(dataEncrypt.includes(req.body.user )){
-        break;
-      }
-
     }
   } 
 })
@@ -314,8 +311,10 @@ app.post('/archive', function(req, res)
         .then(str => 
           {console.log(str)
               const file = JSON.parse(str);
-              console.log(file);
-              res.send(file);
+              if(file.includes(req.body.user )){
+                console.log(file);
+                res.send(file);
+              }
         })
         .catch(err => console.log(err))
       }

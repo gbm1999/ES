@@ -248,6 +248,12 @@ function cogerDatos() {
 	input5.setAttribute("value", "subir tareas");
     div.prepend(input5);
 
+	let input7 = document.createElement('input');
+    input7.setAttribute("type", "button");
+	input7.setAttribute("name", "getTask");
+	input7.setAttribute("value", "coger tareas");
+    div.prepend(input7);
+
 	let input4 = document.createElement('input');
     input4.setAttribute("type", "button");
 	input4.setAttribute("name", "addTask");
@@ -278,6 +284,9 @@ function cogerDatos() {
 
 	let e3 = seccion.querySelector('.informacion input[name="uploadTasks"]');
     e3.addEventListener('click', uploadTasks, false);
+
+	let e4 = seccion.querySelector('.informacion input[name="getTask"]');
+    e4.addEventListener('click', getTask, false);
 
   }
   
@@ -340,9 +349,46 @@ function cogerDatos() {
 		console.log(response);})
 	.catch(error=>{console.log(error)})
 
-	let but = seccion.querySelectorAll('.uploadTasks');
-	but.remove();
+  }
 
+  function getTask(event) {
+	const valores = window.location.search;
+	const urlParams = new URLSearchParams(valores);
+
+	//Accedemos a los valores
+	var user = urlParams.get('email');
+
+	console.log(user);
+
+	const options = {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+			},
+		body: JSON.stringify({user: user})
+	};
+
+
+	fetch( 'http://localhost:5505/getTask', options)
+	.then( response => { 
+		console.log(response);
+		response.json().then((data) => {
+			if(data != null){
+				let div = document.createElement('div');
+				let seccion = document.querySelector('#'+ data.nombre);
+			
+				let e = data.tasks[0];;
+			
+				div.innerHTML = "Tarea: " + e + "<br/>";
+				div.setAttribute("class", "task");
+			
+				seccion.appendChild(div);
+			}
+		});
+})
+	.catch(error=>{console.log(error)})
   }
 
   function borrazip(event)
