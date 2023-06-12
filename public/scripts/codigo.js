@@ -435,7 +435,7 @@ var user = urlParams.get('email');
 				
 					document.querySelector('ul').appendChild(li);
 					
-					mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.descripcion,data.date) ;
+					mostrarzipscreados(seccion,seccion.querySelector('h2'),data.nombre,data.desc,data.date) ;
 				}
 			});
 })

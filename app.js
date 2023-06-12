@@ -75,7 +75,7 @@ function generateKeyFiles(password) {
 app.post('/register', function(req, res)
 {
       //Generamos claves privada y publica de B
-      console.log({publicKey, privateKey} = generateKeyFiles(req.body.passwd));
+      console.log({publicKey, privateKey} = generateKeyFiles(req.body.email ));
 
 
             var objeto = {
@@ -227,6 +227,7 @@ app.post('/getTask', function(req, res)
   let data = []; 
   const dir = './uploads';
   console.log("2");
+  console.log(req.body);
 
   const decrypt = (text, privateKeyPath, passphrase) => {
 
@@ -252,17 +253,20 @@ app.post('/getTask', function(req, res)
   fs.readdir(dir, (err, files) => {
     count2 = (files.length);
   }); 
-  for(let i = 0; i < count2; i++){
-    dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-    decrypt(dataEncrypt, privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
-    .then(str => console.log(str))
-    .catch(err => console.log(err))
+  for(let j = 0; j < count; j++){
+    for(let i = 0; i < count2; i++){
+      dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+      privateKey = fs.readFileSync('./privateKeys/private' + i + '.key', 'utf8');
+      decrypt(dataEncrypt, privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
+      .then(str => console.log(str))
+      .catch(err => console.log(err))
 
-    if(dataEncrypt.includes(req.body.user )){
-      break;
+      if(dataEncrypt.includes(req.body.user )){
+        break;
+      }
+
     }
-
-  }
+  } 
 })
 
 app.post('/archive', function(req, res)
@@ -271,23 +275,45 @@ app.post('/archive', function(req, res)
     const dir = './uploads';
     console.log("2");
     
+
+
+    const decrypt = (text, privateKeyPath, passphrase) => {
+
+      //B desencripta con la clave privada de B
+      return new Promise((resolve, reject) => {
+        const p = path.resolve(privateKeyPath)
+        fs.readFile(p, 'utf8', (err, pk) => {
+          if (err) {
+            return reject(err)
+          }
+    
+          const buffer = Buffer.from(text, 'base64')
+          const decrypted = crypto.privateDecrypt({
+            key: pk.toString(),
+            passphrase
+          }, buffer)
+    
+          resolve(decrypted.toString('utf8'))
+        })
+      })
+    }
     fs.readdir(dir, (err, files) => {
       count2 = (files.length);
     }); 
-    for(let i = 0; i < count2; i++){
-      data = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-      if(data.includes(req.body.user )){
-        break;
+    for(let j = 0; j < count; j++){
+      for(let i = 0; i < count2; i++){
+        dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+        privateKey = './privateKeys/private' + j + '.key';
+        decrypt(dataEncrypt, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
+        .then(str => 
+          {console.log(str)
+              const file = JSON.parse(str);
+              console.log(file);
+              res.send(file);
+        })
+        .catch(err => console.log(err))
       }
-  
-    }
-  
-    if (!data || !data.includes(req.body.user )) return [];
-    else {
-      const file = JSON.parse(data);
-      console.log(file);
-      res.send(file);
-    }
+    } 
 })
       
 
