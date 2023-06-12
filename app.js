@@ -199,22 +199,28 @@ app.post('/uploadTask', function(req, res)
 
     var json = JSON.stringify(objeto);
 
-    // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
-    console.log(json);
-    if(dataEncrypt.includes(req.body.user )){
-
+    var pubKey = "";
+    for(let i = 0; i < count; i++){
+      data = fs.readFileSync('./memory/register' + i + '.json', 'utf8');
+      if(data.includes(req.body.user )){
+        pubKey = './publicKeys/public' + i + '.key.pem';
+      }
+  
     }
+    // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
 
-    let dataEncrypted = encrypt(JSON.stringify(json), publicKey)
-    .then(str => console.log(str))
+    encrypt(JSON.stringify(json), pubKey)
+    .then(str =>{console.log(str)
+      fs.writeFileSync('./tasks/task' + count3 + '.json', str.toString());
+      const dir = './tasks';
+  
+      fs.readdir(dir, (err, files) => {
+        count3 = (files.length);
+      });
+    } )
     .catch(err => console.log(err))
 
-    fs.writeFileSync('./tasks/task' + count3 + '.json', dataEncrypted.toString());
-    const dir = './tasks';
 
-    fs.readdir(dir, (err, files) => {
-      count3 = (files.length);
-    });
 
 
   const crypto = require("crypto");
