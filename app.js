@@ -11,6 +11,20 @@ const crypto = require("crypto");
 var count = 0;
 var count2 = 0;
 var count3 = 0;
+var di = './memory';
+fs.readdir(di, (err, files) => {
+  count = (files.length);
+});
+
+di = './uploads';
+fs.readdir(di, (err, files) => {
+  count2 = (files.length);
+});
+
+di = './tasks';
+fs.readdir(di, (err, files) => {
+  count3 = (files.length);
+});
 
 const passphrase = process.env.ACCESS_TOKEN_SECRET;
 
@@ -306,9 +320,17 @@ app.post('/archive', function(req, res)
       count2 = (files.length);
     }); 
     for(let j = 0; j < count; j++){
+      memo = JSON.parse(fs.readFileSync('./memory/register' + j + '.json', 'utf8'));
       for(let i = 0; i < count2; i++){
         dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+        if(!memo.includes(req.body.user )){
+          console.log(memo);
+          console.log(req.body.user );
+
+        }
+        else{
         privateKey = './privateKeys/private' + j + '.key';
+        console.log(privateKey)
         decrypt(dataEncrypt, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
         .then(str => 
           {console.log(str)
@@ -319,6 +341,7 @@ app.post('/archive', function(req, res)
               }
         })
         .catch(err => console.log(err))
+      }
       }
     } 
 })
