@@ -12,8 +12,6 @@ var count = 0;
 var count2 = 0;
 var count3 = 0;
 
-var enncrypt = [];
-var deecrypt = [];
 const passphrase = process.env.ACCESS_TOKEN_SECRET;
 
 app.use(express.json())
@@ -62,7 +60,7 @@ app.post('/register', function(req, res)
       
       const encryptPrivateKey = async (text) => {
         //generate encryption key using the secret.
-        await crypto.scrypt(process.env.ACCESS_TOKEN_SECRET, 'salt', 24, (err, key) => {
+        await crypto.scrypt(passphrase, 'salt', 24, (err, key) => {
           if (err) throw err;
           console.log(1);
           //create an initialization vector
@@ -108,7 +106,7 @@ app.post('/register', function(req, res)
         });
       }
       
-      console.log(encryptPrivateKey(req.body.passwd));
+      encryptPrivateKey(req.body.passwd);
 })
 
 /*
@@ -117,6 +115,24 @@ app.post('/register', function(req, res)
 
 app.post('/upload', function(req, res)
 {
+
+    //A encripta con la clave pública de B
+  
+    const encrypt = (text, pkPath) => {
+      return new Promise((resolve, reject) => {
+        const absPkPath = path.resolve(pkPath)
+        console.log(absPkPath);
+        fs.readFile(absPkPath, 'utf8', (err, pk) => {
+          if (err) {
+            return reject(err)
+          }
+    
+          const buffer = Buffer.from(text, 'utf8')
+          const encrypted = crypto.publicEncrypt(pk, buffer)
+          resolve(encrypted.toString('base64'))
+        })
+      })
+    }
 
               // Crear el objeto con los datos del archivo y su contenido cifrado
               var objeto = {
@@ -129,7 +145,11 @@ app.post('/upload', function(req, res)
     
             // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
             //console.log(json);
-            fs.writeFileSync('./uploads/files' + count2 + '.json', JSON.stringify(json));
+            let dataEncrypted = encrypt(JSON.stringify(json), "public.key.pem")
+            .then(str => console.log(str))
+            .catch(err => console.log(err))
+
+            fs.writeFileSync('./uploads/files' + count2 + '.json', dataEncrypted.toString());
             const dir = './uploads';
     
             fs.readdir(dir, (err, files) => {
@@ -140,50 +160,48 @@ app.post('/upload', function(req, res)
 app.post('/uploadTask', function(req, res)
 {
 
-              // Crear el objeto con los datos del archivo y su contenido cifrado
-              var objeto = {
-                nombre: req.body.name ,
-                tasks: req.body.tasks ,
-                user: req.body.user
-            };
+    //A encripta con la clave pública de B
+  
+    const encrypt = (text, pkPath) => {
+      return new Promise((resolve, reject) => {
+        const absPkPath = path.resolve(pkPath)
+        fs.readFile(absPkPath, 'utf8', (err, pk) => {
+          if (err) {
+            return reject(err)
+          }
     
-            var json = JSON.stringify(objeto);
-    
-            // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
-            console.log(json);
-            fs.writeFileSync('./tasks/task' + count3 + '.json', JSON.stringify(json));
-            const dir = './tasks';
-    
-            fs.readdir(dir, (err, files) => {
-              count3 = (files.length);
-            });
+          const buffer = Buffer.from(text, 'utf8')
+          const encrypted = crypto.publicEncrypt(pk, buffer)
+          resolve(encrypted.toString('base64'))
+        })
+      })
+    }
+
+    // Crear el objeto con los datos del archivo y su contenido cifrado
+    var objeto = {
+        nombre: req.body.name ,
+        tasks: req.body.tasks ,
+        user: req.body.user
+    };
+
+    var json = JSON.stringify(objeto);
+
+    // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
+    console.log(json);
+    let dataEncrypted = encrypt(JSON.stringify(json), "public.key.pem")
+    .then(str => console.log(str))
+    .catch(err => console.log(err))
+
+    fs.writeFileSync('./tasks/task' + count3 + '.json', dataEncrypted.toString());
+    const dir = './tasks';
+
+    fs.readdir(dir, (err, files) => {
+      count3 = (files.length);
+    });
 
 
   const crypto = require("crypto");
 
-  //A encripta con la clave pública de B
-  
-  const encrypt = (text, pkPath) => {
-    return new Promise((resolve, reject) => {
-      const absPkPath = path.resolve(pkPath)
-      fs.readFile(absPkPath, 'utf8', (err, pk) => {
-        if (err) {
-          return reject(err)
-        }
-  
-        const buffer = Buffer.from(text, 'utf8')
-        const encrypted = crypto.publicEncrypt(pk, buffer)
-        resolve(encrypted.toString('base64'))
-      })
-    })
-  }
-  
-  
-  enncrypt[encrypt.length] = encrypt(JSON.stringify(json), "public.key.pem")
-    .then(str => console.log(str))
-    .catch(err => console.log(err))
-  
-  console.log(enncrypt[encrypt.length]);
 })
 
 app.post('/getTask', function(req, res)
@@ -192,18 +210,6 @@ app.post('/getTask', function(req, res)
   let data = []; 
   const dir = './uploads';
   console.log("2");
-  
-  fs.readdir(dir, (err, files) => {
-    count2 = (files.length);
-  }); 
-  for(let i = 0; i < count2; i++){
-    data = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-    if(data.includes(req.body.user )){
-      break;
-    }
-
-  }
-
 
   const decrypt = (text, privateKeyPath, passphrase) => {
 
@@ -225,13 +231,20 @@ app.post('/getTask', function(req, res)
       })
     })
   }
+  
+  fs.readdir(dir, (err, files) => {
+    count2 = (files.length);
+  }); 
+  for(let i = 0; i < count2; i++){
+    dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+    decrypt(dataEncrypt, req.body.privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
+    .then(str => console.log(str))
+    .catch(err => console.log(err))
 
-  for(let i = 0; i < enncrypt.length; i++){
-    decrypt(enncrypt[i], req.body.privateKey, passphrase) //(contenido encriptado, clave privada, env.token.secret)
-      .then(str => console.log(str))
-      .catch(err => console.log(err))
+    if(data.includes(req.body.user )){
+      break;
+    }
 
-    console.log(deecrypt[i] = decrypt(enncrypt[i]))
   }
 })
 
