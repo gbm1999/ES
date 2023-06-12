@@ -144,13 +144,13 @@ var user = urlParams.get('email');
 		body: JSON.stringify({name: name, file: zip, user: user})
 	};
 
-	fetch( 'http://localhost:5500/upload', options)
+	fetch( 'http://localhost:5505/upload', options)
 	.then(function(response){
 		return response.json(); 
 	})
 	.catch(error=>{console.log(error)})
 
-	fetch( 'http://localhost:5500/download' )
+	fetch( 'http://localhost:5505/download' )
 	.then( response => { console.log(response);})
 	.catch(error=>{console.log(error)})
 	
@@ -333,7 +333,7 @@ function cogerDatos() {
 		body: JSON.stringify({name: name, tasks: array, user: user})
 	};
 
-	fetch( 'http://localhost:5500/uploadTask', options)
+	fetch( 'http://localhost:5505/uploadTask', options)
 	.then( response => { 
 		console.log(response);})
 	.catch(error=>{console.log(error)})
@@ -414,7 +414,7 @@ var user = urlParams.get('email');
 
 
 
-		fetch( 'http://localhost:5500/archive', options)
+		fetch( 'http://localhost:5505/archive', options)
 		.then( response => { 
 			console.log(response);
 			response.json().then((data) => {

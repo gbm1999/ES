@@ -98,7 +98,7 @@ function cogerDatosRegistro()
                     body: JSON.stringify(params)
                 };
         
-                fetch( 'http://localhost:5500/register', options )
+                fetch( 'http://localhost:5505/register', options )
                 .then( response => { location.href = 'archives.html';})
                 .catch(error=>{console.log(error)})
             })
@@ -143,7 +143,7 @@ function cogerDatosSesion()
         body: JSON.stringify(params)
     };
 
-    fetch( 'http://localhost:5500/login', options )
+    fetch( 'http://localhost:5505/login', options )
     .then(function(response) {
         return response.json(); 
     })

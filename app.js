@@ -6,7 +6,6 @@ const app = express()
 const path = require('path')
 
 var fs = require('fs')
-var https = require('https')
 const crypto = require("crypto");
 
 var count = 0;
@@ -14,7 +13,7 @@ var count2 = 0;
 var count3 = 0;
 
 var enncrypt = [];
-var deecrypt;
+var deecrypt = [];
 const passphrase = process.env.ACCESS_TOKEN_SECRET;
 
 app.use(express.json())
@@ -58,17 +57,18 @@ fs.readdir(dir, (err, files) => {
 app.post('/register', function(req, res)
 {
       //Generamos clave privada de B
-      const algorithm = "aes-192-cbc";
 
-      const encrypt = (text) => {
-        //generate encryption key using the secret.
-        crypto.scrypt(passphrase, 'salt', 24, (err, key) => {
-          if (err) throw err;
+      const algorithm = "aes-192-cbc";
       
+      const encryptPrivateKey = async (text) => {
+        //generate encryption key using the secret.
+        await crypto.scrypt(process.env.ACCESS_TOKEN_SECRET, 'salt', 24, (err, key) => {
+          if (err) throw err;
+          console.log(1);
           //create an initialization vector
           crypto.randomFill(new Uint8Array(16), (err, iv) => {
             if (err) throw err;
-      
+            console.log(2);
             const cipher = crypto.createCipheriv(algorithm, key, iv);
       
             let encrypted = '';
@@ -80,36 +80,35 @@ app.post('/register', function(req, res)
       
             cipher.write(text);
             cipher.end();
+            console.log(3);
+
+
+            var objeto = {
+              nombre: req.body.name ,
+              email: req.body.email ,
+              password: req.body.passwd,
+              privateKey: encrypted,
+          };
+  
+          console.log(objeto)
+          var json = JSON.stringify(objeto);
+  
+          // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
+          console.log(json);
+          fs.writeFileSync('./memory/register' + count + '.json', JSON.stringify(json));
+          const dir = './memory';
+  
+          fs.readdir(dir, (err, files) => {
+            count = (files.length);
+          });
+  
+          console.log("User registered");
+          res.redirect('archives.html ?id=" + this.id "');
           });
         });
       }
       
-      var privateKey;
-      console.log(privateKey = encrypt(req.body.passwd))
-
-
-          // Crear el objeto con los datos del archivo y su contenido cifrado
-          var objeto = {
-            nombre: req.body.name ,
-            email: req.body.email ,
-            password: req.body.passwd,
-            privateKey: privateKey,
-        };
-
-        console.log(objeto)
-        var json = JSON.stringify(objeto);
-
-        // Guardar el archivo serializado, comprimido y cifrado en la carpeta del cliente
-        console.log(json);
-        fs.writeFileSync('./memory/register' + count + '.json', JSON.stringify(json));
-        const dir = './memory';
-
-        fs.readdir(dir, (err, files) => {
-          count = (files.length);
-        });
-
-        console.log("User registered");
-        res.redirect('archives.html ?id=" + this.id "');
+      console.log(encryptPrivateKey(req.body.passwd));
 })
 
 /*
