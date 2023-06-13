@@ -282,10 +282,17 @@ app.post('/getTask', function(req, res)
     count3 = (files.length);
   });
   for(let j = 0; j < count; j++){
+    memo = JSON.parse(fs.readFileSync('./memory/register' + j + '.json', 'utf8'));
     for(let i = 0; i < count3; i++){
       dataEncrypt = fs.readFileSync('./tasks/task' + i + '.json', 'utf8');
+      dataEncrypt= JSON.parse(dataEncrypt)
+      if(!memo.includes(req.body.user ) || !dataEncrypt.includes(req.body.user )){
+
+      }
+      else{
+      dataEncrypt= JSON.parse(dataEncrypt)
       privateKey = './privateKeys/private' + j + '.key'; 
-      decrypt(dataEncrypt, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
+      decrypt(dataEncrypt.file, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
       .then(str => 
         {console.log(str)
             const file = JSON.parse(str);
@@ -296,6 +303,7 @@ app.post('/getTask', function(req, res)
       })
       .catch(err => console.log(err))
     }
+  }
   } 
 })
 
