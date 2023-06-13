@@ -172,7 +172,13 @@ app.post('/upload', function(req, res)
             console.log(pubKey);
             encrypt(JSON.stringify(json), pubKey)
             .then(str => {
-              fs.writeFileSync('./uploads/files' + count2 + '.json', str.toString());
+
+              let objeto2 = {
+                file: str.toString(),
+                user: req.body.user,
+            };
+            var json = JSON.stringify(objeto2);
+              fs.writeFileSync('./uploads/files' + count2 + '.json', JSON.stringify(json));
               const dir = './uploads';
       
               fs.readdir(dir, (err, files) => {
@@ -226,7 +232,12 @@ app.post('/uploadTask', function(req, res)
     JSON.stringify(pubKey)
     encrypt(JSON.stringify(json), pubKey)
     .then(str =>{console.log(str)
-      fs.writeFileSync('./tasks/task' + count3 + '.json', str.toString());
+      let objeto2 = {
+        file: str.toString(),
+        user: req.body.user,
+    };
+    var json = JSON.stringify(objeto2);
+      fs.writeFileSync('./tasks/task' + count3 + '.json', JSON.stringify(json));
       const dir = './tasks';
   
       fs.readdir(dir, (err, files) => {
@@ -322,18 +333,16 @@ app.post('/archive', function(req, res)
     for(let j = 0; j < count; j++){
       memo = JSON.parse(fs.readFileSync('./memory/register' + j + '.json', 'utf8'));
       for(let i = 0; i < count2; i++){
-        dataEncrypt = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
-        if(!memo.includes(req.body.user )){
+        var dataEncrypt = JSON.parse(fs.readFileSync('./uploads/files' + i + '.json', 'utf8'));
+        if(!memo.includes(req.body.user ) || !dataEncrypt.includes(req.body.user )){
           console.log(memo);
           console.log(req.body.user );
 
         }
         else{
         privateKey = './privateKeys/private' + j + '.key';
-        console.log(dataEncrypt)
-        console.log(privateKey)
-        console.log(req.body.user)
-        decrypt(dataEncrypt, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
+        dataEncrypt= JSON.parse(dataEncrypt)
+        decrypt(dataEncrypt.file, privateKey, req.body.user) //(contenido encriptado, clave privada, env.token.secret)
         .then(str => 
           {console.log(str)
               const file = JSON.parse(str);
