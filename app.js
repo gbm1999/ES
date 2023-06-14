@@ -366,7 +366,7 @@ app.post('/archive', function(req, res)
 })
       
 // Redirigir la salida de la consola a un archivo
-const consoleOutputFile = fs.createWriteStream('./console_output.txt');
+const consoleOutputFile = fs.createWriteStream('./logs/console_output.txt');
 console.log = function(message) {
   consoleOutputFile.write(message + '\n');
 };
