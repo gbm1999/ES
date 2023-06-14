@@ -34,6 +34,45 @@ function validarContra(valor) {
     
 }
   
+/* Function to generate combination of password */
+function generateP() {
+    var pass = '';
+    var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + 
+            'abcdefghijklmnopqrstuvwxyz0123456789@#$!';
+      
+    for (let i = 1; i <= 10; i++) {
+        var char = Math.floor(Math.random()
+                    * str.length + 1);
+          
+        pass += str.charAt(char)
+    }
+      
+    return pass;
+}
+
+function gfg_Run() {
+    var el_down = document.querySelector('#contra');
+    var el_down1 = document.querySelector('#confcontra');
+    let val = generateP();
+    el_down.value = val;
+    el_down1.value = val;
+}
+
+function mostrarContrasena() {
+    const inputContrasena = document.getElementById("contra");
+    const inputContrasena2 = document.getElementById("confcontra");
+    const ojo = document.getElementById("ojo");
+  
+    if (inputContrasena.type === "password") {
+      inputContrasena.type = "text";
+      inputContrasena2.type = "text";
+      ojo.innerHTML = "👁️";
+    } else {
+      inputContrasena.type = "password";
+      inputContrasena2.type = "password";
+      ojo.innerHTML = "👁️";
+    }
+  }
 
 function cogerDatosRegistro() 
 {   

@@ -16,9 +16,13 @@
            <i class="fa-solid fa-key"></i>
          
             <input type="password" placeholder="Contraseña" id="contra" class="contra" required>
-   
+            <span id="ojo" onclick="mostrarContrasena()">👁️</span>   
            <input type="password" placeholder="Confirmar contraseña" id="confcontra" class="confcontra" required>
            <input type="button" id="registro" class="regis" name="reg" value="Registrarse">
+           <button onclick="gfg_Run()">
+            Generar contraseña
+        </button>
+        <br>
        </div>
        <div class="login">
          <h2>Iniciar Sesión</h2>
@@ -33,6 +37,10 @@
 
 <style>
    
+   #ojo {
+  cursor: pointer;
+  user-select: none;
+}
   body{
     background: #f1f1f1;
     background-image: url("../img/fondoWeb.jpg");
