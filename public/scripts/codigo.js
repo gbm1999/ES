@@ -310,7 +310,7 @@ function cogerDatos() {
 
 	let e = seccion.getElementsByClassName("taskTxt")[0].value;
 
-	div.innerHTML = "Tarea: " + e + "<br/>";
+	div.innerHTML = "<label><input type='checkbox' name='chkbox' onchange='marcarDesmarcar()'> Tarea: " + e +"</label><br>";
 	div.setAttribute("class", "task");
 
 	seccion.appendChild(div);
@@ -382,7 +382,7 @@ function cogerDatos() {
 			
 				let e = data.tasks[0];;
 			
-				div.innerHTML = "Tarea: " + e + "<br/>";
+				div.innerHTML = e + "<br/>";
 				div.setAttribute("class", "task");
 			
 				seccion.appendChild(div);
@@ -487,12 +487,24 @@ var user = urlParams.get('email');
 			});
 })
 		.catch(error=>{console.log(error)})
-
-
-		
-
-
     
+  }
+
+  function marcarDesmarcar() {
+
+	var ps = document.getElementsByName('chkbox');
+console.log(ps.length);
+	for(var i = 0; i < ps.length; i++){
+	  // console: imprime el elemento pulsado <p>
+	  if(ps[i].checked){
+		var value = queryAncestorSelector(ps[i], "label");
+		value.textContent += "✔"
+	  }
+	  else{
+		var value = queryAncestorSelector(ps[i], "label");
+		value.textContent -= "✔"
+	  }
+	}
   }
   
 document.addEventListener('DOMContentLoaded',init,false);
