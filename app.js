@@ -7,6 +7,9 @@ const path = require('path')
 
 var fs = require('fs')
 const crypto = require("crypto");
+const jwt = require('jsonwebtoken')
+
+let refreshTokens = []
 
 var count = 0;
 var count2 = 0;
@@ -38,6 +41,17 @@ app.get('/',function(req,res){
     res.sendFile('index.html', options)
 })
 
+app.post('/token', (req, res) => {
+  const refreshToken = req.body.token
+  if (refreshToken == null) return res.sendStatus(401)
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    const accessToken = generateAccessToken({ name: user.name })
+    res.json({ accessToken: accessToken })
+  })
+})
+
 app.post('/login', function(req, res)
 {
   let data 
@@ -58,13 +72,25 @@ fs.readdir(dir, (err, files) => {
 
   if (!data || !data.includes(req.body.email )) return [];
   else {
+    /** 
     const file = JSON.parse(data);
     console.log(file);
     res.send(file);
+    */
+    const username = req.body.email
+    const user = { name: username }
+  
+    const accessToken = generateAccessToken(user)
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+    refreshTokens.push(refreshToken)
+    res.json({ accessToken: accessToken, refreshToken: refreshToken })
   }
 
 });
 
+function generateAccessToken(user) {
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
+}
 
 // Using a function generateKeyFiles
 function generateKeyFiles(password) {
