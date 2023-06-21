@@ -212,6 +212,7 @@ app.post('/upload', function(req, res)
             if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
             jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
               if (err) return res.sendStatus(403)
+              console.log("Usuario: "+ user);
               const accessToken = generateAccessToken({ name: user })
               res.json({ accessToken: accessToken })
             })
@@ -274,6 +275,16 @@ app.post('/uploadTask', function(req, res)
       });
     } )
     .catch(err => console.log(err))
+
+    const refreshToken = req.body.token
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
+      console.log("Usuario: "+ user);
+      const accessToken = generateAccessToken({ name: user })
+      res.json({ accessToken: accessToken })
+    })
 })
 
 app.post('/getTask', function(req, res)
@@ -334,6 +345,16 @@ app.post('/getTask', function(req, res)
     }
   }
   } 
+
+  const refreshToken = req.body.token
+  if (refreshToken == null) return res.sendStatus(401)
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    console.log("Usuario: "+ user);
+    const accessToken = generateAccessToken({ name: user })
+    res.json({ accessToken: accessToken })
+  })
 })
 
 app.post('/archive', function(req, res)
@@ -392,6 +413,15 @@ app.post('/archive', function(req, res)
       }
       }
     } 
+    const refreshToken = req.body.token
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
+      console.log("Usuario: "+ user);
+      const accessToken = generateAccessToken({ name: user })
+      res.json({ accessToken: accessToken })
+    })
 })
       
 // Redirigir la salida de la consola a un archivo
@@ -424,6 +454,15 @@ app.get('/download', function(req, res)
         console.log(file);
         res.send(file);
       }
+      const refreshToken = req.body.token
+      if (refreshToken == null) return res.sendStatus(401)
+      if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        console.log("Usuario: "+ user);
+        const accessToken = generateAccessToken({ name: user })
+        res.json({ accessToken: accessToken })
+      })
 })
 
 app.listen(port, function(){
