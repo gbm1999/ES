@@ -41,17 +41,6 @@ app.get('/',function(req,res){
     res.sendFile('index.html', options)
 })
 
-app.post('/token', (req, res) => {
-  const refreshToken = req.body.token
-  if (refreshToken == null) return res.sendStatus(401)
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-    const accessToken = generateAccessToken({ name: user.name })
-    res.json({ accessToken: accessToken })
-  })
-})
-
 app.post('/login', function(req, res)
 {
   let data 
@@ -72,18 +61,17 @@ fs.readdir(dir, (err, files) => {
 
   if (!data || !data.includes(req.body.email )) return [];
   else {
-    /** 
-    const file = JSON.parse(data);
+    let file = JSON.parse(data);
     console.log(file);
-    res.send(file);
-    */
+    file = JSON.parse(file);
+    
     const username = req.body.email
     const user = { name: username }
   
     const accessToken = generateAccessToken(user)
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
     refreshTokens.push(refreshToken)
-    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+    res.send({file,  accessToken: accessToken, refreshToken: refreshToken });
   }
 
 });
@@ -142,7 +130,13 @@ app.post('/register', function(req, res)
           });
   
           console.log("User registered");
-          res.redirect('archives.html?email=' + req.body.email);
+          const username = req.body.email
+          const user = { name: username }
+        
+          const accessToken = generateAccessToken(user)
+          const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+          refreshTokens.push(refreshToken)
+          res.redirect('archives.html?token=' + accessToken);
 })
 
 /*
@@ -212,6 +206,15 @@ app.post('/upload', function(req, res)
               });
             })
             .catch(err => console.log(err))
+
+            const refreshToken = req.body.token
+            if (refreshToken == null) return res.sendStatus(401)
+            if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+            jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+              if (err) return res.sendStatus(403)
+              const accessToken = generateAccessToken({ name: user })
+              res.json({ accessToken: accessToken })
+            })
 
 
             
@@ -397,6 +400,31 @@ console.log = function(message) {
   consoleOutputFile.write(message + '\n');
 };
 
+app.get('/download', function(req, res)
+{
+    let data 
+    const dir = './uploads';
+    
+    fs.readdir(dir, (err, files) => {
+      count2 = (files.length);
+    });
+      for(let i = 0; i < count2; i++){
+        data = fs.readFileSync('./uploads/files' + i + '.json', 'utf8');
+        if(data.includes(req.body.name )){
+          break;
+        }
+    
+      }
+    
+      console.log(data);
+    
+      if (!data || !data.includes(req.body.name )) return [];
+      else {
+        const file = JSON.parse(data);
+        console.log(file);
+        res.send(file);
+      }
+})
 
 app.listen(port, function(){
   console.log(`Servidor iniciado en el puerto: ${port}`);

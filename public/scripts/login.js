@@ -138,7 +138,7 @@ function cogerDatosRegistro()
                 };
         
                 fetch( 'http://localhost:5505/register', options )
-                .then( response => { location.href = 'archives.html?email=' + correo+ '';})
+                .then( response => { location.href = 'archives.html?token=' + correo+ '';})
                 .catch(error=>{console.log(error)})
             })
         });
@@ -188,12 +188,12 @@ function cogerDatosSesion()
     })
     .then(function(data) {
         console.log(data);
-        bcrypt.compare(contraseña, data.password, function(err, res)
+        bcrypt.compare(contraseña, data.file.password, function(err, res)
         {
             if(res == true)
             {
                 console.log(this.email.value);
-                location.href = 'archives.html?email=' + correo+ '';
+                location.href = 'archives.html?token=' + data.accessToken+ '';
             }
             else
             {
